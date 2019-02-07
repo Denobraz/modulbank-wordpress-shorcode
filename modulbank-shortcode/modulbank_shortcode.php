@@ -5,12 +5,12 @@
   Version: 2.0
 */
 
-if (!class_exists('FPaymentsForm')) {
+if (!class_exists('FPaymentsSCForm')) {
     include(dirname(__FILE__) . '/inc/fpayments.php');
 }
 
 
-class FPaymentsShortcodeCallback extends AbstractFPaymentsCallbackHandler {
+class FPaymentsShortcodeCallback extends AbstractFPaymentsSCCallbackHandler {
     private $plugin;
     function __construct(FPaymentsShortcode $plugin)    { $this->plugin = $plugin; }
     protected function get_fpayments_form()             { return $this->plugin->get_fpayments_form(); }
@@ -33,10 +33,10 @@ class FPaymentsShortcodeCallback extends AbstractFPaymentsCallbackHandler {
 
 class FPaymentsShortcode {
     const VERSION        = '1.0';
-    const NAME           = FPaymentsConfig::PREFIX . '-shortcode';
+    const NAME           = FPaymentsSCConfig::PREFIX . '-shortcode';
 
-    const SETTINGS_GROUP = FPaymentsConfig::PREFIX . '-shortcode-options2';
-    const SETTINGS_SLUG  = FPaymentsConfig::PREFIX . '-shortcode';
+    const SETTINGS_GROUP = FPaymentsSCConfig::PREFIX . '-shortcode-options2';
+    const SETTINGS_SLUG  = FPaymentsSCConfig::PREFIX . '-shortcode';
 
     const STATUS_UNKNOWN = 'unknown';
     const STATUS_PAID    = 'paid';
@@ -55,12 +55,12 @@ class FPaymentsShortcode {
     function __construct() {
         global $wpdb;
 
-        $this->success_url = get_home_url() . '/?' . FPaymentsConfig::PREFIX . '=success';
-        $this->fail_url = get_home_url() . '/?' . FPaymentsConfig::PREFIX . '=fail';
-        $this->submit_url = get_home_url() . '/?' . FPaymentsConfig::PREFIX . '=submit';
-        $this->callback_url = get_home_url() . '/?' . FPaymentsConfig::PREFIX . '=callback';
+        $this->success_url = get_home_url() . '/?' . FPaymentsSCConfig::PREFIX . '=success';
+        $this->fail_url = get_home_url() . '/?' . FPaymentsSCConfig::PREFIX . '=fail';
+        $this->submit_url = get_home_url() . '/?' . FPaymentsSCConfig::PREFIX . '=submit';
+        $this->callback_url = get_home_url() . '/?' . FPaymentsSCConfig::PREFIX . '=callback';
 
-        $db_prefix = $wpdb->prefix . FPaymentsConfig::PREFIX . '_shortcode_';
+        $db_prefix = $wpdb->prefix . FPaymentsSCConfig::PREFIX . '_shortcode_';
         $this->order_table = $db_prefix . 'order';
 
         $this->order_table_format = array(
@@ -86,7 +86,7 @@ class FPaymentsShortcode {
 
         $this->templates_dir = dirname(__FILE__) . '/templates/';
         add_action('init',  array($this, 'init'));
-        add_shortcode(FPaymentsConfig::PREFIX, array($this, 'fpayments_button'));
+        add_shortcode(FPaymentsSCConfig::PREFIX, array($this, 'fpayments_button'));
         if (is_admin()) {
             add_action('admin_menu', array($this, 'admin_menu'));
             add_action('plugins_loaded', array($this, 'plugins_loaded'));
@@ -108,7 +108,7 @@ class FPaymentsShortcode {
 
     function plugins_loaded() {
         $this->log('plugins_loaded()');
-        $key = FPaymentsConfig::PREFIX . '_shortcode_version';
+        $key = FPaymentsSCConfig::PREFIX . '_shortcode_version';
         $version = get_site_option($key);
         if ($version != self::VERSION) {
             $this->log('Prev version: ' . $version);
@@ -227,8 +227,8 @@ class FPaymentsShortcode {
 
     function admin_menu() {
         add_options_page(
-            FPaymentsConfig::NAME . ' shortcode',
-            FPaymentsConfig::NAME . ' shortcode',
+            FPaymentsSCConfig::NAME . ' shortcode',
+            FPaymentsSCConfig::NAME . ' shortcode',
             'manage_options',
             self::SETTINGS_SLUG,
             array($this, 'settings_page')
@@ -273,7 +273,7 @@ class FPaymentsShortcode {
         register_setting(self::SETTINGS_GROUP, self::SETTINGS_GROUP);
         add_settings_section(
             self::SETTINGS_GROUP,
-            FPaymentsConfig::NAME,
+            FPaymentsSCConfig::NAME,
             array($this, 'settings_intro_text'),
             self::SETTINGS_SLUG
         );
@@ -448,7 +448,7 @@ class FPaymentsShortcode {
             $options['merchant_id'] &&
             $options['secret_key']
         ) {
-            return new FPaymentsForm(
+            return new FPaymentsSCForm(
                 $options['merchant_id'],
                 $options['secret_key'],
                 $options['test_mode'],
@@ -468,8 +468,8 @@ class FPaymentsShortcode {
         foreach (array(
             'merchant_id'     => '',
             'secret_key'      => '',
-            'success_url'     => FPaymentsForm::abs('/success'),
-            'fail_url'        => FPaymentsForm::abs('/fail'),
+            'success_url'     => FPaymentsSCForm::abs('/success'),
+            'fail_url'        => FPaymentsSCForm::abs('/fail'),
             'test_mode'       => 'on',
             'pay_button_text' => __('Оплатить картой'),
         ) as $k => $v) {
@@ -543,7 +543,7 @@ class FPaymentsShortcode {
 
         $receipt_contact = $order['client_email'] ?: $order['client_phone'] ?: '';
         $receipt_items= array(
-            new FPaymentsRecieptItem(
+            new FPaymentsSCRecieptItem(
                     $order['description'] ?: 'payment',
                     $order['amount'],
                     1

@@ -10,7 +10,7 @@
 </head>
 <body>
 	<form action="<?php echo $ff->get_url(); ?>" method="post" id="autosubmit-form">
-	    <?php echo FPaymentsForm::array_to_hidden_fields($data); ?>
+	    <?php echo FPaymentsSCForm::array_to_hidden_fields($data); ?>
 	    <input type="submit" value="<?php _e('Continue'); ?>">
 	</form>
 </body>

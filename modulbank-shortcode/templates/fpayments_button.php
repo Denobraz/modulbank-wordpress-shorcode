@@ -1,5 +1,5 @@
 <form action="<?php echo $url; ?>" method="post">
-    <?php echo FPaymentsForm::array_to_hidden_fields($atts); ?>
+    <?php echo FPaymentsSCForm::array_to_hidden_fields($atts); ?>
     <?php foreach ($additional_fields as $name => $params) { ?>
         <?php if ($params['hidden']) { ?>
             <input name="<?php echo $name; ?>" type="hidden" value="">
