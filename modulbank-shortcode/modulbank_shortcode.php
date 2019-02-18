@@ -33,10 +33,6 @@ class FPaymentsShortcodeCallback extends AbstractFPaymentsSCCallbackHandler {
 
 class FPaymentsShortcode {
     const VERSION        = '1.0';
-    const NAME           = FPaymentsSCConfig::PREFIX . '-shortcode';
-
-    const SETTINGS_GROUP = FPaymentsSCConfig::PREFIX . '-shortcode-options2';
-    const SETTINGS_SLUG  = FPaymentsSCConfig::PREFIX . '-shortcode';
 
     const STATUS_UNKNOWN = 'unknown';
     const STATUS_PAID    = 'paid';
@@ -51,6 +47,18 @@ class FPaymentsShortcode {
     private $fail_url;
     private $submit_url;
     private $callback_url;
+
+    static function get_slug() {
+        return FPaymentsSCConfig::PREFIX . '-shortcode';
+    }
+
+    static function get_group() {
+        return FPaymentsSCConfig::PREFIX . '-shortcode-options2';
+    }
+
+    static function get_name() {
+        return FPaymentsSCConfig::PREFIX . '-shortcode';
+    }
 
     function __construct() {
         global $wpdb;
@@ -95,14 +103,15 @@ class FPaymentsShortcode {
         add_action('parse_request', array($this, 'parse_request'));
     }
 
+
     function log($msg) {
 
         if(!array_key_exists('HOME', $_SERVER))
             return;
 
-        $dest = $_SERVER['HOME'] . '/' . self::NAME . '.log';
+        $dest = $_SERVER['HOME'] . '/' . self::get_name() . '.log';
         if (!@error_log("$msg\n", 3, $dest)) {
-            error_log('[' . self::NAME . '] ' . $msg);
+            error_log('[' . self::get_name() . '] ' . $msg);
         }
     }
 
@@ -230,7 +239,7 @@ class FPaymentsShortcode {
             FPaymentsSCConfig::NAME . ' shortcode',
             FPaymentsSCConfig::NAME . ' shortcode',
             'manage_options',
-            self::SETTINGS_SLUG,
+            self::get_slug(),
             array($this, 'settings_page')
         );
         add_menu_page(
@@ -263,66 +272,66 @@ class FPaymentsShortcode {
     }
 
     function settings_page() {
-        $group = self::SETTINGS_GROUP;
-        $slug = self::SETTINGS_SLUG;
+        $group = self::get_group();
+        $slug = self::get_slug();
         $callback_url = $this->callback_url;
         include $this->templates_dir . 'settings.php';
     }
 
     function admin_init() {
-        register_setting(self::SETTINGS_GROUP, self::SETTINGS_GROUP);
+        register_setting(self::get_group(), self::get_group());
         add_settings_section(
-            self::SETTINGS_GROUP,
+            self::get_group(),
             FPaymentsSCConfig::NAME,
             array($this, 'settings_intro_text'),
-            self::SETTINGS_SLUG
+            self::get_slug()
         );
         add_settings_field(
             'merchant_id',
             __('Merchant ID', 'fpayments'),
             array($this, 'char_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'merchant_id')
         );
         add_settings_field(
             'secret_key',
             __('Secret key', 'fpayments'),
             array($this, 'char_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'secret_key')
         );
         add_settings_field(
             'test_mode',
             __('Test mode', 'fpayments'),
             array($this, 'boolean_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'test_mode')
         );
         add_settings_field(
             'success_url',
             __('Success URL', 'fpayments'),
             array($this, 'char_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'success_url')
         );
         add_settings_field(
             'fail_url',
             __('Fail URL', 'fpayments'),
             array($this, 'char_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'fail_url')
         );
         add_settings_field(
             'pay_button_text',
             __('Pay button text', 'fpayments'),
             array($this, 'char_field'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'pay_button_text')
         );
 
@@ -330,8 +339,8 @@ class FPaymentsShortcode {
             'sno',
             __('Система налогообложения', 'fpayments'),
             array($this, 'setting_dropdown_fn'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'sno',
                   'options' => array(
                         'osn' => 'Общая',
@@ -348,8 +357,8 @@ class FPaymentsShortcode {
             'payment_object',
             __('Предмет расчета', 'fpayments'),
             array($this, 'setting_dropdown_fn'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'payment_object',
                 'options' => array(
                     'commodity' => 'Товар',
@@ -372,8 +381,8 @@ class FPaymentsShortcode {
             'payment_method',
             __('Метод платежа', 'fpayments'),
             array($this, 'setting_dropdown_fn'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'payment_method',
                 'options' => array(
                     'full_prepayment' => 'Предоплата 100%',
@@ -390,8 +399,8 @@ class FPaymentsShortcode {
             'vat',
             __('Ставка НДС', 'fpayments'),
             array($this, 'setting_dropdown_fn'),
-            self::SETTINGS_SLUG,
-            self::SETTINGS_GROUP,
+            self::get_slug(),
+            self::get_group(),
             array('id' => 'vat',
                 'options' => array(
                     'none' => 'Без НДС',
@@ -405,19 +414,19 @@ class FPaymentsShortcode {
     }
 
     function settings_intro_text() {
-        
+
     }
 
     function char_field($args) {
         $options =  $this->get_options();
-        echo '<input name="' . self::SETTINGS_GROUP . '[' . $args['id'] . ']"' .
+        echo '<input name="' . self::get_group() . '[' . $args['id'] . ']"' .
              ' type="text" size="40" value="' . esc_attr($options[$args['id']]) . '">';
     }
 
     function  setting_dropdown_fn($args) {
         $options =  $this->get_options();
 
-        $name = self::SETTINGS_GROUP . '[' . $args['id']. ']';
+        $name = self::get_group() . '[' . $args['id']. ']';
         $val = array_key_exists($args['id'],$options) ? $options[$args['id']] : '';
         $items = $args['options'];
 
@@ -433,7 +442,7 @@ class FPaymentsShortcode {
     function boolean_field($args) {
         $options =  $this->get_options();
         $val = $options[$args['id']];
-        $name = self::SETTINGS_GROUP . '[' . $args['id']. ']';
+        $name = self::get_group() . '[' . $args['id']. ']';
         if($options[$args['id']]) { $checked = ' checked="checked" '; }
 
         echo '<input name="' . $name . '"' .
@@ -452,7 +461,7 @@ class FPaymentsShortcode {
                 $options['merchant_id'],
                 $options['secret_key'],
                 $options['test_mode'],
-                self::NAME . ' ' . self::VERSION,
+                self::get_name() . ' ' . self::VERSION,
                 "WordPress " . get_bloginfo('version')
             );
         } else {
@@ -461,7 +470,7 @@ class FPaymentsShortcode {
     }
 
     private function get_options() {
-        $result = get_option(self::SETTINGS_GROUP);
+        $result = get_option(self::get_group());
         if (!$result) {
             $result = array();
         }
