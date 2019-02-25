@@ -2,7 +2,7 @@
 /*
   Plugin Name: Modulbank Shortcode
   Description: Shortcode for Modulbank payments
-  Version: 2.0
+  Version: 2.1
 */
 
 if (!class_exists('FPaymentsSCForm')) {
@@ -32,7 +32,7 @@ class FPaymentsShortcodeCallback extends AbstractFPaymentsSCCallbackHandler {
 
 
 class FPaymentsShortcode {
-    const VERSION        = '1.0';
+    const VERSION        = '2.1';
 
     const STATUS_UNKNOWN = 'unknown';
     const STATUS_PAID    = 'paid';
