@@ -1,7 +1,7 @@
 Установка на сервер
 ===================
 
-1. Скопируйте каталог modulbank-shortcode в каталог `wp-content/plugins` вашего сайта или загрузите [архив](https://github.com/modulbank-pay/modulbank-wordpress-shorcode/releases/download/1.0/modulbank-shortcode.zip) с плагином через UI загрузки расширений.
+1. Скопируйте каталог modulbank-shortcode в каталог `wp-content/plugins` вашего сайта или загрузите [архив](https://github.com/modulbank-pay/modulbank-wordpress-shorcode/releases/download/v2.2/modulbank-shortcode_2.2.zip) с плагином через UI загрузки расширений.
 
 2. В администраторской панели вашего сайта откройте раздел «Плагины», найдите «Modulbank Shortcode» и нажмите «Активировать»:
 
@@ -13,7 +13,7 @@
 
     Настройки → Modulbank Shortcode
 
-Заполните поля «Merchant ID» и «Secret key». Эти значения уникальны для каждого магазина, посмотреть их можно в личном 
+Заполните поля «Merchant ID» и «Secret key». Эти значения уникальны для каждого магазина, посмотреть их можно в личном
 кабинете в разделе «Готовые модули».
 
 Сохраните изменения.
