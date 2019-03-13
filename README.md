@@ -32,6 +32,7 @@
 ```
 [modulbank_sc amount="10.99" currency="RUB" description="Описание платежа" fields="client_name,client_email,client_phone"]
 ```
+Для онлайн фискализации наличие одного из полей client_email, client_phone является обязательным.
 
 Форма приёма произвольной суммы с запросом имени и телефона:
 ```
