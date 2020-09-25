@@ -2,7 +2,7 @@
 /*
   Plugin Name: Modulbank Shortcode
   Description: Shortcode for Modulbank payments
-  Version: 2.2
+  Version: 2.3
 */
 
 if (!class_exists('FPaymentsSCForm')) {
@@ -32,7 +32,7 @@ class FPaymentsShortcodeCallback extends AbstractFPaymentsSCCallbackHandler {
 
 
 class FPaymentsShortcode {
-    const VERSION        = '2.2';
+    const VERSION        = '2.3';
 
     const STATUS_UNKNOWN = 'unknown';
     const STATUS_PAID    = 'paid';
@@ -145,10 +145,15 @@ class FPaymentsShortcode {
 
     private function get_additional_fields(array $atts) {
         $additional_fields = array(
+            'order_id' => array(
+                'label'  => __('Номер заказа', 'fpayments'),
+                'hidden' => true,
+                'type'   => 'text" pattern="[0-9.]+',
+            ),
             'client_amount' => array(
                 'label'  => __('Сумма', 'fpayments'),
                 'hidden' => true,
-                'type'   => 'number',
+                'type'   => 'text" pattern="[0-9.]+',
             ),
             'client_description' => array(
                 'label'  => __('Описание', 'fpayments'),
