@@ -21,12 +21,16 @@ class FPaymentsShortcodeCallback extends AbstractFPaymentsSCCallbackHandler {
     protected function mark_order_as_completed($order, array $data) {
         $order['status'] = FPaymentsShortcode::STATUS_PAID;
         $order['meta'] = $data['meta'];
-        return $this->plugin->save_order($order);
+        $result = $this->plugin->save_order($order);
+		do_action('modulbank_shortcode_order_marked_as_completed', $order, $data, $result);
+		return $result;
     }
     protected function mark_order_as_error($order, array $data) {
         $order['status'] = FPaymentsShortcode::STATUS_ERROR;
         $order['meta'] = $data['meta'];
-        return $this->plugin->save_order($order);
+        $result = $this->plugin->save_order($order);
+	    do_action('modulbank_shortcode_order_marked_as_error', $order, $data, $result);
+	    return $result;
     }
 }
 
@@ -505,7 +509,7 @@ class FPaymentsShortcode {
             'client_phone'      => $data['client_phone'],
             'status'            => self::STATUS_UNKNOWN,
             'testing'           => $options['test_mode'] ? 1 : 0,
-            'meta'              => '',
+            'meta'              => $data['meta'] ? $data['meta'] : '',
         );
         global $wpdb;
         $wpdb->insert($this->order_table, $order) or die(__('FPAYMENTS ERROR', 'fpayments') . ': ' . __('can\'t create order', 'fpayments'));
@@ -553,7 +557,6 @@ class FPaymentsShortcode {
 
         $options = $this->get_options();
         $order = $this->create_order($_POST);
-        $meta = '';
 
         $receipt_contact = $order['client_email'] ?: $order['client_phone'] ?: '';
         $receipt_items= array(
@@ -578,7 +581,7 @@ class FPaymentsShortcode {
             $options['fail_url'],
             $_POST['cancel_url'],
             $this->callback_url,
-            $meta,
+            $order['meta'],
             $order['description'],
             $receipt_contact,
             $receipt_items
